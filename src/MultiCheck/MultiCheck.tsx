@@ -1,5 +1,4 @@
-import './MultiCheck.css';
-
+import CheckBox from './CheckBox';
 import React from 'react';
 
 export type Option = {
@@ -24,11 +23,20 @@ type Props = {
   options: Option[];
   columns?: number;
   values?: string[];
-  onChange?: (options: Option[]) => void;
+  onChange: (options: Option[]) => void;
 };
 
-const MultiCheck: React.FunctionComponent<Props> = (props): JSX.Element => {
-  return <div className="MultiCheck">{/* TODO */}</div>;
+const MultiCheck: React.FunctionComponent<Props> = ({ label, options, columns = 1, values, onChange }): JSX.Element => {
+  return (
+    <div className="MultiCheck">
+      <h1>{label}</h1>
+      <div data-testid="MultiCheckColumns" style={{ columnCount: columns }}>
+        {options.map((option) => (
+          <CheckBox label={option.label} key={option.value} onChange={() => onChange([option])} isChecked={values?.includes(option.value) ?? false} />
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default MultiCheck;
