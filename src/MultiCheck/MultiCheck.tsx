@@ -22,17 +22,40 @@ type Props = {
   label?: string;
   options: Option[];
   columns?: number;
-  values?: string[];
-  onChange: (options: Option[]) => void;
+  values: string[];
+  onChange: (values: string[]) => void;
 };
 
 const MultiCheck: React.FunctionComponent<Props> = ({ label, options, columns = 1, values, onChange }): JSX.Element => {
+  const onChangeCheckbox = (optionValue: string) => {
+    // if value selected, then un-select it
+    if (values.includes(optionValue)) onChange(values.filter((value) => value !== optionValue));
+    // otherwise select it
+    else onChange([...values, optionValue]);
+  };
+
+  const isAllOptionsSelected = () => {
+    let isAllSelected = true;
+    options.map((option) => {
+      // checked if and only if all other options are checked.
+      // Unchecked if any other option is unchecked.
+      if (!values.includes(option.value)) isAllSelected = false;
+    });
+    return isAllSelected;
+  };
+
+  const onClickSelectAll = () => {
+    if (isAllOptionsSelected()) onChange([]); // Unchecked: All other options are unchecked.
+    else onChange(options.map((option) => option.value)); // Checked: All other options are checked.
+  };
+
   return (
     <div className="MultiCheck">
       <h1>{label}</h1>
       <div data-testid="MultiCheckColumns" style={{ columnCount: columns }}>
+        <CheckBox label="Select All" dataTestId="SelectAll" key="SelectAll" onChange={onClickSelectAll} isChecked={isAllOptionsSelected()} />
         {options.map((option) => (
-          <CheckBox label={option.label} key={option.value} onChange={() => onChange([option])} isChecked={values?.includes(option.value) ?? false} />
+          <CheckBox label={option.label} dataTestId={option.value} key={option.value} onChange={() => onChangeCheckbox(option.value)} isChecked={values?.includes(option.value) ?? false} />
         ))}
       </div>
     </div>
