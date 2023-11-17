@@ -1,9 +1,16 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import renderer from 'react-test-renderer';
 import '@testing-library/jest-dom';
 import CheckBox from '.';
 
 describe('CheckBox', () => {
+  describe('snapshot', () => {
+    it('renders correctly', () => {
+      const multiCheck = renderer.create(<CheckBox label="test checkbox label" onChange={() => {}} isChecked={true} />).toJSON();
+      expect(multiCheck).toMatchSnapshot();
+    });
+  });
   it('renders the label', () => {
     render(<CheckBox label="test checkbox label" onChange={() => {}} isChecked={false} />);
     const label = screen.getByText('test checkbox label');

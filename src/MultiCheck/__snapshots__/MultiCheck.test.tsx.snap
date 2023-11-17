@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MultiCheck snapshot renders correctly 1`] = `
+<div
+  className="MultiCheck"
+>
+  <h1>
+    test checkbox label
+  </h1>
+  <div
+    data-testid="ListOfComponents"
+    style={
+      {
+        "columnCount": 3,
+      }
+    }
+  >
+    <div>
+      <input
+        checked={true}
+        data-testid="111"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <label>
+        aaa
+      </label>
+    </div>
+    <div>
+      <input
+        checked={true}
+        data-testid="222"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <label>
+        bbb
+      </label>
+    </div>
+    <div>
+      <input
+        checked={true}
+        data-testid="333"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <label>
+        ccc
+      </label>
+    </div>
+  </div>
+</div>
+`;

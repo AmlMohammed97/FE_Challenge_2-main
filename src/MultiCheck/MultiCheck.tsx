@@ -1,5 +1,6 @@
-import CheckBox from './CheckBox';
+import CheckBox from '../CheckBox';
 import React from 'react';
+import ListOfComponents from '../ListOfComponents';
 
 export type Option = {
   label: string;
@@ -24,9 +25,10 @@ type Props = {
   columns?: number;
   values: string[];
   onChange: (values: string[]) => void;
+  shouldHaveSelectAllOption?: boolean;
 };
 
-const MultiCheck: React.FunctionComponent<Props> = ({ label, options, columns = 1, values, onChange }): JSX.Element => {
+const MultiCheck: React.FunctionComponent<Props> = ({ label, options, columns = 1, values, onChange, shouldHaveSelectAllOption = false }): JSX.Element => {
   const onChangeCheckbox = (optionValue: string) => {
     // if value selected, then un-select it
     if (values.includes(optionValue)) onChange(values.filter((value) => value !== optionValue));
@@ -48,16 +50,16 @@ const MultiCheck: React.FunctionComponent<Props> = ({ label, options, columns = 
     if (isAllOptionsSelected()) onChange([]); // Unchecked: All other options are unchecked.
     else onChange(options.map((option) => option.value)); // Checked: All other options are checked.
   };
+  const selectAllCheckbox = <CheckBox label="Select All" dataTestId="SelectAll" key="SelectAll" onChange={onClickSelectAll} isChecked={isAllOptionsSelected()} />;
+  const listOfCheckbox = options.map((option) => (
+    <CheckBox label={option.label} dataTestId={option.value} key={option.value} onChange={() => onChangeCheckbox(option.value)} isChecked={values?.includes(option.value) ?? false} />
+  ));
 
+  const getListOfComponents = () => (shouldHaveSelectAllOption ? [selectAllCheckbox, ...listOfCheckbox] : [...listOfCheckbox]);
   return (
     <div className="MultiCheck">
       <h1>{label}</h1>
-      <div data-testid="MultiCheckColumns" style={{ columnCount: columns }}>
-        <CheckBox label="Select All" dataTestId="SelectAll" key="SelectAll" onChange={onClickSelectAll} isChecked={isAllOptionsSelected()} />
-        {options.map((option) => (
-          <CheckBox label={option.label} dataTestId={option.value} key={option.value} onChange={() => onChangeCheckbox(option.value)} isChecked={values?.includes(option.value) ?? false} />
-        ))}
-      </div>
+      <ListOfComponents columns={columns} listOfComponents={getListOfComponents()} />
     </div>
   );
 };
