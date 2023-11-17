@@ -4,6 +4,14 @@ import '@testing-library/jest-dom';
 import renderer from 'react-test-renderer';
 import MultiCheck, { Option } from '.';
 
+const specialOptions = [
+  {
+    label: 'Select All',
+    key: 'SelectAll',
+    isChecked: false,
+    onChange: () => {},
+  },
+];
 const options: Option[] = [
   { label: 'aaa', value: '111' },
   { label: 'bbb', value: '222' },
@@ -34,16 +42,10 @@ describe('MultiCheck', () => {
       expect(selectAllCheckbox).not.toBeInTheDocument();
     });
     it('renders unchecked select all checkbox', () => {
-      render(<MultiCheck shouldHaveSelectAllOption label="" onChange={() => {}} options={options} values={[]} />);
+      render(<MultiCheck specialOptions={specialOptions} label="" onChange={() => {}} options={options} values={[]} />);
       const selectAllCheckbox = screen.getByTestId('SelectAll');
       expect(selectAllCheckbox).toBeInTheDocument();
       expect(selectAllCheckbox).not.toBeChecked();
-    });
-    it('renders checked select all checkbox', () => {
-      render(<MultiCheck shouldHaveSelectAllOption label="" onChange={() => {}} options={options} values={['111', '222', '333']} />);
-      const selectAllCheckbox = screen.getByTestId('SelectAll');
-      expect(selectAllCheckbox).toBeInTheDocument();
-      expect(selectAllCheckbox).toBeChecked();
     });
     it('renders with two unchecked options', () => {
       render(<MultiCheck label="" onChange={() => {}} options={options} values={[]} />);

@@ -22,10 +22,28 @@ const App: FunctionComponent = (): JSX.Element => {
     setSelectedValues([...newSelectedValues]);
   }
 
+  // checked if and only if all other options are checked.
+  // Unchecked if any other option is unchecked.
+  const isAllOptionsSelected = selectedValues.length === options.length;
+
+  const onChangeSelectAll = () => {
+    if (isAllOptionsSelected) setSelectedValues([]); // Unchecked: All other options are unchecked.
+    else setSelectedValues(options.map((option) => option.value)); // Checked: All other options are checked.
+  };
+
+  const specialOptions = [
+    {
+      label: 'Select All',
+      key: 'SelectAll',
+      isChecked: isAllOptionsSelected,
+      onChange: onChangeSelectAll,
+    },
+  ];
+
   return (
     <div>
       <h1>Multi Check Component</h1>
-      <MultiCheck label="my-multi-check" options={options} onChange={onSelectedOptionsChange} values={selectedValues} columns={2} />
+      <MultiCheck label="my-multi-check" specialOptions={specialOptions} options={options} onChange={onSelectedOptionsChange} values={selectedValues} columns={2} />
       <div>
         <h2>Current selected values:</h2>
         <div>{selectedValues.join(',')}</div>
