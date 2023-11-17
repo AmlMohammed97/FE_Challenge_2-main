@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ListOfComponents snapshot renders correctly 1`] = `
+<div
+  data-testid="ListOfComponents"
+  style={
+    {
+      "columnCount": 3,
+    }
+  }
+>
+  <div />
+  <div />
+</div>
+`;

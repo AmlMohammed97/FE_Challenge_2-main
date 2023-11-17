@@ -1,10 +1,17 @@
 import CheckBox from '../CheckBox';
-import React from 'react';
+import React, { useMemo } from 'react';
 import ListOfComponents from '../ListOfComponents';
 
 export type Option = {
   label: string;
   value: string;
+};
+
+export type specialOption = {
+  label: string;
+  isChecked: boolean;
+  key: string;
+  onChange: () => void;
 };
 
 /**
@@ -25,10 +32,10 @@ type Props = {
   columns?: number;
   values: string[];
   onChange: (values: string[]) => void;
-  shouldHaveSelectAllOption?: boolean;
+  specialOptions?: specialOption[];
 };
 
-const MultiCheck: React.FunctionComponent<Props> = ({ label, options, columns = 1, values, onChange, shouldHaveSelectAllOption = false }): JSX.Element => {
+const MultiCheck: React.FunctionComponent<Props> = ({ label, options, columns = 1, values, onChange, specialOptions = [] }): JSX.Element => {
   const onChangeCheckbox = (optionValue: string) => {
     // if value selected, then un-select it
     if (values.includes(optionValue)) onChange(values.filter((value) => value !== optionValue));
@@ -36,30 +43,26 @@ const MultiCheck: React.FunctionComponent<Props> = ({ label, options, columns = 
     else onChange([...values, optionValue]);
   };
 
-  const isAllOptionsSelected = () => {
-    let isAllSelected = true;
-    options.map((option) => {
-      // checked if and only if all other options are checked.
-      // Unchecked if any other option is unchecked.
-      if (!values.includes(option.value)) isAllSelected = false;
-    });
-    return isAllSelected;
-  };
+  const specialCheckbox = useMemo(
+    () =>
+      specialOptions.map((specialOption) => (
+        <CheckBox label={specialOption.label} dataTestId={specialOption.key} key={specialOption.key} onChange={specialOption.onChange} isChecked={specialOption.isChecked} />
+      )),
+    [specialOptions],
+  );
 
-  const onClickSelectAll = () => {
-    if (isAllOptionsSelected()) onChange([]); // Unchecked: All other options are unchecked.
-    else onChange(options.map((option) => option.value)); // Checked: All other options are checked.
-  };
-  const selectAllCheckbox = <CheckBox label="Select All" dataTestId="SelectAll" key="SelectAll" onChange={onClickSelectAll} isChecked={isAllOptionsSelected()} />;
-  const listOfCheckbox = options.map((option) => (
-    <CheckBox label={option.label} dataTestId={option.value} key={option.value} onChange={() => onChangeCheckbox(option.value)} isChecked={values?.includes(option.value) ?? false} />
-  ));
+  const listOfCheckbox = useMemo(
+    () =>
+      options.map((option) => (
+        <CheckBox label={option.label} dataTestId={option.value} key={option.value} onChange={() => onChangeCheckbox(option.value)} isChecked={values?.includes(option.value) ?? false} />
+      )),
+    [options, values],
+  );
 
-  const getListOfComponents = () => (shouldHaveSelectAllOption ? [selectAllCheckbox, ...listOfCheckbox] : [...listOfCheckbox]);
   return (
     <div className="MultiCheck">
       <h1>{label}</h1>
-      <ListOfComponents columns={columns} listOfComponents={getListOfComponents()} />
+      <ListOfComponents columns={columns} listOfComponents={[...specialCheckbox, ...listOfCheckbox]} />
     </div>
   );
 };
